@@ -35,6 +35,9 @@ The following optional environment vars may be set:
   using GitHub's API, accessed with this repo-scoped token.
 - `os_keyname` -- OpenStack keypair to use for provisioning,
   if you want to support virtualized tests.
+- `os_keyfile` -- Absolute path to the private key
+  corresponding to the OpenStack keyname, if you want to
+  support virtualized tests.
 - `os_network` -- OpenStack network to use for provisioning,
   if you want to support virtualized tests.
 - `os_floating_ip_pool` -- If specified, assign a floating

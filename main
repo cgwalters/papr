@@ -188,7 +188,7 @@ provision_node() {
 }
 
 vmssh() {
-    ssh -q \
+    ssh -q -i "$os_keyfile" \
         -o StrictHostKeyChecking=no \
         -o PasswordAuthentication=no \
         -o UserKnownHostsFile=/dev/null \
@@ -196,7 +196,7 @@ vmssh() {
 }
 
 vmscp() {
-    scp -q \
+    scp -q -i "$os_keyfile" \
         -o StrictHostKeyChecking=no \
         -o PasswordAuthentication=no \
         -o UserKnownHostsFile=/dev/null "$@"
@@ -277,7 +277,8 @@ push_repo() {
     local node_addr=$(cat state/node_addr)
 
     rsync --quiet -az --no-owner --no-group \
-        -e "ssh -q -o StrictHostKeyChecking=no \
+        -e "ssh -q -i '$os_keyfile' \
+                   -o StrictHostKeyChecking=no \
                    -o PasswordAuthentication=no \
                    -o UserKnownHostsFile=/dev/null" \
         checkouts/$github_repo/ root@$node_addr:/root/checkout/
@@ -404,7 +405,8 @@ run_tests() {
         local node_addr=$(cat state/node_addr)
 
         timeout --kill-after=30s "$timeout" \
-            ssh -q -o StrictHostKeyChecking=no \
+            ssh -q -i "$os_keyfile" \
+                   -o StrictHostKeyChecking=no \
                    -o UserKnownHostsFile=/dev/null \
                    root@$node_addr "sh worker.sh 2>&1" | \
             tee -a $upload_dir/output.txt || rc=$?
@@ -460,7 +462,8 @@ prep_artifacts() {
             # been upstream since *2009*. Wow.
 
             #rsync -raz --quiet --delete-missing-args --no-owner --no-group \
-            #    -e "ssh -q -o StrictHostKeyChecking=no \
+            #    -e "ssh -q -i '$os_keyfile' \
+            #               -o StrictHostKeyChecking=no \
             #               -o PasswordAuthentication=no \
             #               -o UserKnownHostsFile=/dev/null" \
             #    --files-from=state/parsed/artifacts \
